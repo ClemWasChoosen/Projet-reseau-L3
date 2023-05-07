@@ -28,30 +28,6 @@ void print_word(int k, uint16_t m){
 }
 
 
-
-// uint16_t encode_G(uint16_t m){
-//     int data[8]; 
-//     for(int i=0; i<8; i++){
-//         data[i] = get_nth_bit(i, m);
-//         // printf("%d\n", data[i]);
-//     }
-//     uint16_t encoded = m;
-//     encoded |= (data[1] ^ data[2] ^ data[3] ^ data[5] ^ data[6])<<7;
-//     print_word(16, encoded);
-//     encoded |= (data[2] ^ data[3] ^ data[4] ^ data[6] ^ data[7])<<6;
-//     encoded |= (data[0] ^ data[1] ^ data[7])<<5;
-//     encoded |= (data[0] ^ data[2] ^ data[3] ^ data[4] ^ data[5])<<4;
-//     encoded |= (data[1] ^ data[3] ^ data[4] ^ data[5] ^ data[6])<<3;
-//     encoded |= (data[2] ^ data[4] ^ data[5] ^ data[6] ^ data[7])<<2;
-//     encoded |= (data[0] ^ data[1] ^ data[4] ^ data[6] ^ data[7])<<1;
-//     encoded |= (data[0] ^ data[2] ^ data[3] ^ data[4] ^ data[7]);
-
-
-//     return encoded;
-// }
-
-
-//I do not know why this is works! AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 uint16_t encode_G(uint16_t m){
     uint16_t data[8];
     uint16_t result = m >> 8;
