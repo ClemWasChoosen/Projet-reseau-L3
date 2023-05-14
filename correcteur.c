@@ -11,7 +11,7 @@ uint16_t set_nth_bit(int n, uint16_t m){
     return m;
 }
 
-uint16_t get_nth_bit(int n, uint16_t m){
+uint16_t get_nth_bit(int n, uint16_t m){    //pour n=0 n->15 : de gauche à droite
     // et
     return (m >> (15-n)) & 1;
 }
@@ -70,7 +70,7 @@ uint16_t cnt_bits(uint16_t m){
 }
 
 
-uint8_t dist_code_G(){
+uint16_t dist_code_G(){
 
     int G [8][16] ={{1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0},
                 {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1},
@@ -84,11 +84,11 @@ uint8_t dist_code_G(){
 
     int k = 8;
     int n = 16;
-    int8_t distance = n; //init a val maximale
+    uint16_t distance = n; //init a val maximale
 
     for (int i = 0; i < k-1; i++) {
         for (int j = i + 1; j < k; j++) {
-            int8_t diff = 0;
+            uint16_t diff = 0;
             for (int l = 0; l < n; l++) {
                 if (G[i][l] != G[j][l]) {
                     diff++;
@@ -108,15 +108,39 @@ uint8_t dist_code_G(){
 }
 
 
-int main(int argc, char** argv){
 
-    // print_word(16 ,encode_G(0b0011100100000000));
-    // printf("%d\n", cnt_bits(0b0011100100000000));
+uint8_t mod_poly(uint16_t m) {
+    uint16_t polynomial = 0b110111001; // P(X) = X^8 + X^7 + X^5 + X^4 + X^3 + 1
+    uint16_t remainder = m;
 
+    for (int i = 15; i >= 8; i--) {
+        if (get_nth_bit((15-i), remainder)) {
+            remainder ^= (polynomial << (i-8));
+            print_word(16, remainder);
+        }
+    }
 
-
+    //return the last 8 bits of remainder HERE
     
-    printf("%d\n", dist_code_G());
+
+    return (uint8_t)(remainder & 0xFF);
+}
+
+
+
+int main(/*int argc, char** argv*/){
+
+    // //fais step 1 dans (Polynomial Code Generator Tool)
+    // uint16_t polynomial = 0b110111001;
+    // for (int i = 15; i >= 8; i--){
+    //     print_word(16, polynomial << (i-8));
+    // }
+
+
+
+    print_word(8 ,mod_poly(0b0000101100000000));
+
+
 
     return 0;
 }
