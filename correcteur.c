@@ -1,6 +1,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
+
+
+
 uint16_t set_nth_bit(int n, uint16_t m){
     // ou
     m |= (1 << (15-n));
@@ -67,10 +70,44 @@ uint16_t cnt_bits(uint16_t m){
 }
 
 
+uint8_t dist_code_G(int G[8][16], int k, int n){
+    int8_t distance = n; //init a val maximale
+
+    for (int i = 0; i < k-1; i++) {
+        for (int j = i + 1; j < k; j++) {
+            int8_t diff = 0;
+            for (int l = 0; l < n; l++) {
+                if (G[i][l] != G[j][l]) {
+                    diff++;
+                }
+            }
+            if (diff < distance) {
+                distance = diff;
+            }
+        }
+    }
+
+    return distance;
+}
+
+
 int main(int argc, char** argv){
 
-    print_word(16 ,encode_G(0b0011100100000000));
+    // print_word(16 ,encode_G(0b0011100100000000));
     // printf("%d\n", cnt_bits(0b0011100100000000));
+
+    int G [8][16] ={{1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0},
+                    {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1},
+                    {0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1},
+                    {0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0},
+                    {0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0},
+                    {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1},
+                    {0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1},
+                    {0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1}
+                    };
+
+    
+    printf("%d\n", dist_code_G(G, 8, 16));
 
     return 0;
 }
