@@ -30,6 +30,14 @@ void print_word(int k, uint16_t m){
     printf("\n");
 }
 
+void print_byte(int k, uint8_t m){
+    for(int i=0; i<k; i++){
+        printf("%d", (m >> (7-i) & 1));
+    }
+    printf("\n");
+}
+
+
 
 uint16_t encode_G(uint16_t m){
     uint16_t data[8];
@@ -116,15 +124,13 @@ uint8_t mod_poly(uint16_t m) {
     for (int i = 15; i >= 8; i--) {
         if (get_nth_bit((15-i), remainder)) {
             remainder ^= (polynomial << (i-8));
-            print_word(16, remainder);
+            // print_word(16, remainder);
         }
     }
-
-    //return the last 8 bits of remainder HERE
     
-
-    return (uint8_t)(remainder & 0xFF);
+    return (uint8_t)(remainder);
 }
+
 
 
 
@@ -138,7 +144,7 @@ int main(/*int argc, char** argv*/){
 
 
 
-    print_word(8 ,mod_poly(0b0000101100000000));
+    print_byte(8 ,mod_poly(0b0000101100000000));
 
 
 
