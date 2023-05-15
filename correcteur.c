@@ -119,16 +119,16 @@ uint16_t dist_code_G(){
 
 uint8_t mod_poly(uint16_t m) {
     uint16_t polynomial = 0b110111001; // P(X) = X^8 + X^7 + X^5 + X^4 + X^3 + 1
-    uint16_t remainder = m;
+    uint16_t reste = m;
 
     for (int i = 15; i >= 8; i--) {
-        if (get_nth_bit((15-i), remainder)) {
-            remainder ^= (polynomial << (i-8));
-            // print_word(16, remainder);
+        if (get_nth_bit((15-i), reste)) {
+            reste ^= (polynomial << (i-8));
+            // print_word(16, reste);
         }
     }
     
-    return (uint8_t)(remainder);
+    return (uint8_t)(reste);
 }
 
 
@@ -142,19 +142,30 @@ uint8_t decode_poly(uint16_t m){
 }
 
 
+uint8_t syndromes[8] = {0b01110110,0b00111011,0b11000001,0b10111100,0b01011110,0b00101111,0b11001011,0b10111001};
+
+
+// uint8_t correct(uint16_t m) {
+
+//     return 0;
+// }
+
+
+
+
 
 int main(/*int argc, char** argv*/){
 
-    // //fais step 1 dans (Polynomial Code Generator Tool)
-    // uint16_t polynomial = 0b110111001;
-    // for (int i = 15; i >= 8; i--){
-    //     print_word(16, polynomial << (i-8));
-    // }
+    print_word(16, encode_poly(0b0000101100000000));
+    print_byte(8, mod_poly(0b1000000000000000));
+    uint8_t m_err = mod_poly(0b1000101100000000);
+    print_byte(8, m_err);
 
 
 
-    // print_byte(8 ,mod_poly(0b0000110000000000));
-    print_byte(8, decode_poly(0b0000101100000111));
+
+
+    // print_byte(8, correct(0b1011100110011010));
 
 
 
