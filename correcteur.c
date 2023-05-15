@@ -132,6 +132,15 @@ uint8_t mod_poly(uint16_t m) {
 }
 
 
+uint16_t encode_poly(uint16_t m){
+    return m |= mod_poly(m);
+}
+
+uint8_t decode_poly(uint16_t m){
+    uint8_t test = (uint8_t)(m >> 8);
+    return test;
+}
+
 
 
 int main(/*int argc, char** argv*/){
@@ -144,7 +153,8 @@ int main(/*int argc, char** argv*/){
 
 
 
-    print_byte(8 ,mod_poly(0b0000101100000000));
+    // print_byte(8 ,mod_poly(0b0000110000000000));
+    print_byte(8, decode_poly(0b0000101100000111));
 
 
 
