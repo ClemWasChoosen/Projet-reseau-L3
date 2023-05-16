@@ -146,7 +146,7 @@ uint8_t syndromes[8] = {0b01110110,0b00111011,0b11000001,0b10111100,0b01011110,0
 
 
 uint8_t correct(uint16_t m) {
-    uint8_t syndrome = mod_poly(m); // Calcul du syndrome
+    uint8_t syndrome = mod_poly(m);
     uint8_t correction = 0;
     int i = 0;
     while (i < 8 && correction == 0) {
@@ -162,21 +162,42 @@ uint8_t correct(uint16_t m) {
 
 
 unsigned char correct2errors(uint16_t m){
+    uint16_t temp = m;
+    uint8_t syndrome = mod_poly(m);
+    uint8_t correction = 0;
+    int i, j = 0;
+    while (i < 8 && correction == 0){
+        while (j < 8 && correction == 0){
+            if(syndrome == (syndromes[i]^syndromes[j])){
+                temp = chg_nth_bit(i, m);
+                correction = chg_nth_bit(j, temp) >> 8;
+            }
+            j++;
+        }
+        i++;
+    }
 
-    return '\0';
+
+    return correction;
 }
 
 
 
 int main(/*int argc, char** argv*/){
 
-    // uint16_t m = encode_poly(0b0000101100000000);
+    uint16_t m = encode_poly(0b0000101100000000);
     // print_word(16, m);
     // print_byte(8, mod_poly(m ^ 0b1000000000000000));
 
     // print_byte(8, mod_poly(0b1000000000000000));
     // print_byte(8, mod_poly(0b0010000000000000));
     // print_byte(8, mod_poly(0b1010000000000000));
+
+    // uint16_t test = m ^ 0b1100000000000000;
+    // print_word(16, test);
+    // print_byte(8, correct2errors(test));
+
+
 
 
 
