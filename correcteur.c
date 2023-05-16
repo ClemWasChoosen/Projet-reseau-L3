@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
-
+#include <stdlib.h>
 
 
 
@@ -161,31 +161,56 @@ uint8_t correct(uint16_t m) {
 }
 
 
-unsigned char correct2errors(uint16_t m){
+// unsigned char correct2errors(uint16_t m){
+//     uint16_t temp = m;
+//     uint8_t syndrome = mod_poly(m);
+//     uint8_t correction = 0;
+//     int i = 0;
+//     int j = 1;
+
+//     while (i < 7 && correction == 0){
+//         while (j < 8 && correction == 0){
+//             if(syndrome == (syndromes[i]^syndromes[j])){
+//                 temp = chg_nth_bit(i, m);
+//                 correction = chg_nth_bit(j, temp) >> 8;
+//             }
+//             j++;
+//         }
+//         i++;
+//     }
+
+
+//     return correction;
+// }
+
+
+unsigned char correct2errors(uint16_t m) {
     uint16_t temp = m;
     uint8_t syndrome = mod_poly(m);
     uint8_t correction = 0;
-    int i, j = 0;
-    while (i < 8 && correction == 0){
-        while (j < 8 && correction == 0){
-            if(syndrome == (syndromes[i]^syndromes[j])){
-                temp = chg_nth_bit(i, m);
-                correction = chg_nth_bit(j, temp) >> 8;
+
+    for (int i = 0; i < 7; i++) {
+        for (int j = i + 1; j < 8; j++) {
+            if (syndrome == (syndromes[i] ^ syndromes[j])) {
+                temp = chg_nth_bit(i, temp);
+                temp = chg_nth_bit(j, temp);
+                correction = temp >> 8;
+                return (char) correction; // Return the corrected data immediately
             }
-            j++;
         }
-        i++;
     }
 
-
-    return correction;
+    // If no correction is found, fallback to the existing correct function
+    correction = correct(m);
+    return (char) correction;
 }
 
 
 
-int main(/*int argc, char** argv*/){
 
-    uint16_t m = encode_poly(0b0000101100000000);
+int main(){
+
+    // uint16_t m = encode_poly(0b0000101100000000);
     // print_word(16, m);
     // print_byte(8, mod_poly(m ^ 0b1000000000000000));
 
@@ -193,13 +218,47 @@ int main(/*int argc, char** argv*/){
     // print_byte(8, mod_poly(0b0010000000000000));
     // print_byte(8, mod_poly(0b1010000000000000));
 
-    // uint16_t test = m ^ 0b1100000000000000;
+    // uint16_t test = m ^ 0b1001000000000000;
     // print_word(16, test);
     // print_byte(8, correct2errors(test));
 
 
+    FILE* file = fopen("corrupted_file_RL", "rb");
+    if (file == NULL) {
+        printf("Failed to open the file.\n");
+        return 1;
+    }
 
 
+
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+
+
+    uint16_t* encoded_data = (uint16_t*)malloc(file_size);
+    if (encoded_data == NULL) {
+        printf("Memory allocation failed.\n");
+        fclose(file);
+        return 1;
+    }
+
+    fread(encoded_data, sizeof(uint16_t), file_size / sizeof(uint16_t), file);
+    fclose(file);
+
+    printf("Decoding the corrupted file:\n");
+
+    // Decode and print the corrected data
+    for (int i = 0; i < file_size / sizeof(uint16_t); i++) {
+        uint16_t block = encoded_data[i];
+        unsigned char corrected_data = correct2errors(block);
+        printf("%c", corrected_data);
+    }
+
+    printf("\n");
+
+    free(encoded_data);
 
 
     return 0;
